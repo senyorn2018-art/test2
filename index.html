@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AIS 5 Level System</title>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+
+<style>
+body{
+  background: linear-gradient(to bottom,#7ec8ff,#ffe066);
+  font-family:"Khmer OS Battambang", Arial;
+}
+.main-box{
+  background:#fff;
+  max-width:1100px;
+  margin:30px auto;
+  padding:25px;
+  border-radius:15px;
+ 
+}
+/*Logo */
+.main-box { background: white; max-width: 900px; margin: 40px auto; 
+    border-radius: 20px; padding: 30px; } 
+    .logo-title { text-align: center; margin-bottom: 20px; }
+     .logo-title h2 { font-weight: bold; margin-top: 10px; } 
+     .logo-title span { color: red; font-weight: bold; } 
+     .sub-title { text-align: center; font-weight: bold; margin: 20px 0; font-size: 18px; }
+.page-number{text-align:center;font-weight:bold;}
+tr:hover{background:#f1f1f1;cursor:pointer;}
+.level-btn.active{background:#007bff !important;color:#fff;}
+</style>
+</head>
+
+<body>
+
+<div class="main-box">
+<h3 class="text-center text-primary mb-3">AIS 9 Level Module System</h3>
+
+<!-- ✅ LEVEL BUTTONS -->
+<div class="text-center mb-3">
+  <button class="btn btn-outline-primary level-btn" data-level="Level 1">Level 1</button>
+  <button class="btn btn-outline-primary level-btn" data-level="Level 2">Level 2</button>
+  <button class="btn btn-outline-primary level-btn" data-level="Level 3">Level 3</button>
+  <button class="btn btn-outline-primary level-btn" data-level="Level 4">Level 4</button>
+  <button class="btn btn-outline-primary level-btn" data-level="Level 5">Level 5</button>
+  <button class="btn btn-outline-primary level-btn" data-level="Level 6">Level 6</button>
+  <button class="btn btn-outline-primary level-btn" data-level="Level 7">Level 7</button>
+  <button class="btn btn-outline-primary level-btn" data-level="Level 8">Level 8</button>
+  <button class="btn btn-outline-primary level-btn" data-level="Level 9">Level 9</button>
+</div>
+
+<!-- ✅ FORM -->
+<div class="card p-3 mb-3">
+<div class="form-row">
+
+<select id="level" class="form-control col mr-2">
+<option value="">-- Level --</option>
+<option value="Level 1">Level 1</option>
+<option value="Level 2">Level 2</option>
+<option value="Level 3">Level 3</option>
+<option value="Level 4">Level 4</option>
+<option value="Level 5">Level 5</option>
+<option value="Level 6">Level 6</option>
+<option value="Level 7">Level 7</option>
+<option value="Level 8">Level 8</option>
+<option value="Level 9">Level 9</option>
+</select>
+
+<select id="module" class="form-control col mr-2">
+<option value="">-- Module --</option>
+<option value="M1">M1</option>
+<option value="M2">M2</option>
+<option value="M3">M3</option>
+<option value="M4">M4</option>
+<option value="M5">M5</option>
+</select>
+
+<select id="task" class="form-control col mr-2">
+<option value="">-- Task --</option>
+<option value="Task1">Task1</option>
+<option value="Task2">Task2</option>
+<option value="Task3">Task3</option>
+<option value="Task4">Task4</option>
+<option value="Task5">Task5</option>
+</select>
+
+
+<textarea id="title" class="form-control col mr-2" placeholder="Title"></textarea>
+
+<input id="page" class="form-control col" placeholder="Page">
+
+</div>
+
+<div class="text-center mt-3">
+<button id="add" class="btn btn-success">Add</button>
+<button id="update" class="btn btn-warning" disabled>Update</button>
+<button id="clear" class="btn btn-secondary">Clear</button>
+</div>
+</div>
+
+<!-- ✅ TABLE -->
+<!-- ✅ EXPORT AREA -->
+<div id="exportArea" style="padding:20px">
+
+  <!-- ✅ LOGO HEADER -->
+  <div class="logo-title mb-4" style="border:1px solid green; padding:20px; border-radius:20px;">
+    <h1><span style="color:green;">AIS</span></h1>
+    <h5>American <span>Intercon</span> School</h5>
+    <p>A Mengly J. Quach Education School</p>
+    <p style=" color:rgb(10, 161, 20)"><span >មេរៀនសម្រាប់មើលត្រៀមប្រឡង</span>
+     <select id="examType" style="border:green;text-align:center;" required>
+  <option value="">-- ជ្រើសរើសប្រភេទ --</option>
+  <option value="ប្រចាំខែ">ប្រចាំខែ</option>
+  <option value="ពាក់កណ្ដាលឆមាស១">ពាក់កណ្ដាលឆមាស១</option>
+  <option value="ឆមាស១">ឆមាស១</option>
+  <option value="ពាក់កណ្ដាលឆមាស២">ពាក់កណ្ដាលឆមាស២</option>
+  <option value="ឆមាស២">ឆមាស២</option>
+</select>
+
+<br><br>
+
+<input type="date" id="examDate" class="form-control"
+       style="max-width:200px;margin:auto;border:none" required>
+
+    </p>
+  </div>
+
+  <!-- ✅ TABLE -->
+  <table class="table table-bordered" id="dataTable">
+  <thead>
+    <tr>
+      <th>Level</th>
+      <th>Title</th>
+      <th>Page</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+  </table>
+
+</div>
+
+<!-- ✅ EXPORT -->
+<div class="text-center mt-3">
+<button onclick="if(validateExport()) exportExcel()" class="btn btn-info">Excel</button>
+<button onclick="if(validateExport()) exportPDF()" class="btn btn-danger">PDF</button>
+<button onclick="if(validateExport()) exportImage()" class="btn btn-primary">Photo</button>
+</div>
+
+</div>
+
+<script>
+let editIndex = null;
+let currentLevel = "";
+
+/* ✅ LEVEL BUTTON CLICK */
+$(".level-btn").click(function(){
+  $(".level-btn").removeClass("active");
+  $(this).addClass("active");
+
+  currentLevel = $(this).data("level");
+  $("#level").val(currentLevel); // Auto set in form
+  filterByLevel();
+});
+
+/* ✅ ADD */
+$("#add").click(function(){
+
+ // ✅ FIX LEVEL FROM BUTTON
+ let level = currentLevel;  
+
+ let module=$("#module").val(),
+     task=$("#task").val(),
+     title=$("#title").val(),
+     page=$("#page").val();
+
+ if(!level){
+   alert("សូមជ្រើស Level ជាមុនសិន!");
+   return;
+ }
+
+ if(!module||!task||!title||!page){
+   alert("សូមបំពេញអោយគ្រប់!");
+   return;
+ }
+
+ let list = JSON.parse(localStorage.getItem("aisData")) || [];
+
+ list.push({
+   level: level,   // ✅ FIXED LEVEL
+   title: `${module}.${task} : ${title}`,
+   page: page
+ });
+
+ localStorage.setItem("aisData", JSON.stringify(list));
+
+ // ✅ Reload តាម Level
+ filterByLevel(); 
+ clearForm();
+});
+//clear form
+function clearForm(){
+  $("#module,#task,#title,#page").val("");  // ❌ មិន clear Level
+  $("#add").prop("disabled",false);
+  $("#update").prop("disabled",true);
+  editIndex = null;
+}
+
+
+/* ✅ LOAD ALL */
+function loadData(){
+ let list=JSON.parse(localStorage.getItem("aisData"))||[];
+ let html="";
+ list.forEach((d,i)=>{
+   html+=`
+   <tr onclick="editRow(${i})">
+     <td>${d.level}</td>
+     <td>${d.title}</td>
+     <td class="page-number">${d.page}</td>
+   </tr>`;
+ });
+ $("#dataTable tbody").html(html);
+}
+
+/* ✅ FILTER BY LEVEL */
+function filterByLevel(){
+ let list=JSON.parse(localStorage.getItem("aisData"))||[];
+ let html="";
+ list.forEach((d,i)=>{
+   if(d.level === currentLevel){
+     html+=`
+     <tr onclick="editRow(${i})">
+       <td>${d.level}</td>
+       <td>${d.title}</td>
+       <td class="page-number">${d.page}</td>
+     </tr>`;
+   }
+ });
+ $("#dataTable tbody").html(html);
+}
+
+/* ✅ EDIT */
+function editRow(i){
+ let list=JSON.parse(localStorage.getItem("aisData"));
+ $("#level").val(list[i].level);
+ $("#title").val(list[i].title);
+ $("#page").val(list[i].page);
+ editIndex=i;
+ $("#add").prop("disabled",true);
+ $("#update").prop("disabled",false);
+}
+
+/* ✅ UPDATE */
+$("#update").click(function(){
+ let list = JSON.parse(localStorage.getItem("aisData"));
+
+ list[editIndex].title = $("#title").val();
+ list[editIndex].page  = $("#page").val();
+
+ localStorage.setItem("aisData", JSON.stringify(list));
+
+ // ✅ Reload តាម Level
+ if(currentLevel){
+   filterByLevel();
+ }else{
+   loadData();
+ }
+
+ clearForm();
+});
+
+
+/* ✅ CLEAR */
+$("#clear").click(function(){
+
+  if(!currentLevel){
+    alert("សូមជ្រើស Level ជាមុនសិន!");
+    return;
+  }
+
+  if(!confirm("តើអ្នកពិតជាចង់លុប Data ទាំងអស់របស់ " + currentLevel + " មែនទេ?")){
+    return;
+  }
+
+  let list = JSON.parse(localStorage.getItem("aisData")) || [];
+
+  // ✅ លុបតែ data តាម Level
+  let newList = list.filter(d => d.level !== currentLevel);
+
+  localStorage.setItem("aisData", JSON.stringify(newList));
+
+  filterByLevel();   // Refresh Table តាម Level
+  clearForm();       // Clear Form
+});
+
+/* ✅ EXPORT */
+//full excel 
+/*function exportExcel(){
+
+  let list = JSON.parse(localStorage.getItem("aisData")) || [];
+
+  // ✅ Create Header like Logo Area
+  let wsData = [
+    ["AIS"],
+    ["American Intercon School"],
+    ["A Mengly J. Quach Education School"],
+    [""],
+    ["Level", "Title", "Page"]
+  ];
+
+  // ✅ Add table data
+  list.forEach(d => {
+    wsData.push([d.level, d.title, d.page]);
+  });
+
+  let ws = XLSX.utils.aoa_to_sheet(wsData);
+
+  // ✅ Create Workbook
+  let wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "AIS Data");
+
+  // ✅ Export
+  XLSX.writeFile(wb, "AIS_Full_Export.xlsx");
+}*/
+
+function exportExcel(){
+ let wb=XLSX.utils.table_to_book(document.getElementById("dataTable"));
+ XLSX.writeFile(wb,"AISReviewlesson.xlsx");
+}
+//function export pdf
+/*function exportPDF(){
+ const { jsPDF } = window.jspdf;
+ let doc=new jsPDF();
+ doc.autoTable({ html:"#dataTable" });
+ doc.save("AIS.pdf");
+}*/
+function exportPDF(){
+  const { jsPDF } = window.jspdf;
+
+  html2canvas(document.getElementById("exportArea"), {
+    scale: 3,
+    useCORS: true
+  }).then(canvas => {
+
+    let imgData = canvas.toDataURL("image/png");
+    let pdf = new jsPDF("p", "mm", "a4");
+
+    let pageWidth  = pdf.internal.pageSize.getWidth();
+    let pageHeight = pdf.internal.pageSize.getHeight();
+
+    let imgWidth  = pageWidth;
+    let imgHeight = canvas.height * imgWidth / canvas.width;
+
+    if(imgHeight > pageHeight){
+      imgHeight = pageHeight;
+    }
+
+    pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+    pdf.save("AIS_Full_Export.pdf");
+  });
+}
+
+function exportImage(){
+  html2canvas(document.getElementById("exportArea"), {
+    scale: 3,   // Resolution ខ្ពស់
+    useCORS: true
+  }).then(canvas=>{
+    let link=document.createElement("a");
+    link.download="AIS_Table Review lesson.png";
+    link.href=canvas.toDataURL("image/png");
+    link.click();
+  });
+}
+
+loadData();
+//validation export pdf
+function validateExport(){
+  let examType = $("#examType").val();
+  let examDate = $("#examDate").val();
+
+  if(!examType){
+    alert("សូមជ្រើសរើសប្រភេទសិន!");
+    return false;
+  }
+
+  if(!examDate){
+    alert("សូមជ្រើសរើសកាលបរិច្ឆេទសិន!");
+    return false;
+  }
+
+  return true;
+}
+
+</script>
+
+</body>
+</html>
